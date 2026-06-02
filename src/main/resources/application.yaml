@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: smartmenu-backend
+  data:
+    mongodb:
+      uri: mongodb+srv://smartmenu-admin:Z7v8dQJsnwBsSJ0M@smartmenu-admin.iwxaypr.mongodb.net/smartmenu?retryWrites=true&w=majority&appName=smartmenu-admin
+      database: smartmenu
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.smartmenu: DEBUG
