@@ -21,8 +21,8 @@ public class DishController {
     @GetMapping
     public List<Dish> getAllDishes(
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) Boolean vegetarian,
-            @RequestParam(required = false) Boolean spicy,
+            @RequestParam(required = false) String vegetarian,
+            @RequestParam(required = false) String spicy,
             @RequestParam(required = false) Double maxPrice) {
 
         List<Dish> dishes = dishRepository.findAll();
@@ -30,9 +30,9 @@ public class DishController {
         if (category != null)
             dishes = dishes.stream().filter(d -> category.equalsIgnoreCase(d.getCategory())).collect(Collectors.toList());
         if (vegetarian != null)
-            dishes = dishes.stream().filter(d -> vegetarian.equals(d.getVegetarian())).collect(Collectors.toList());
+            dishes = dishes.stream().filter(d -> d.getVegetarian() != null && d.getVegetarian().equals(Boolean.parseBoolean(vegetarian))).collect(Collectors.toList());
         if (spicy != null)
-            dishes = dishes.stream().filter(d -> spicy.equals(d.getSpicy())).collect(Collectors.toList());
+            dishes = dishes.stream().filter(d -> d.getSpicy() != null && d.getSpicy().equals(Boolean.parseBoolean(spicy))).collect(Collectors.toList());
         if (maxPrice != null)
             dishes = dishes.stream().filter(d -> d.getPrice() <= maxPrice).collect(Collectors.toList());
 
