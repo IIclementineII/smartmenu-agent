@@ -94,4 +94,45 @@ public class DishController {
             return ResponseEntity.ok(dish);
         }).orElse(ResponseEntity.notFound().build());
     }
+
+    // GET /api/dishes/summary - 返回简洁格式给 Agent
+    @GetMapping("/summary")
+    public List<Map<String, Object>> getDishSummary(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String vegetarian,
+            @RequestParam(required = false) String spicy,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) String excludeAllergen) {
+
+        List<Dish> dishes = dishRepository.findAll();
+
+        if (category != null)
+            dishes = dishes.stream().filter(d -> category.equalsIgnoreCase(d.getCategory())).collect(Collectors.toList());
+        if (vegetarian != null)
+            dishes = dishes.stream().filter(d -> d.getVegetarian() != null && d.getVegetarian().equals(Boolean.parseBoolean(vegetarian))).collect(Collectors.toList());
+        if (spicy != null)
+            dishes = dishes.stream().filter(d -> d.getSpicy() != null && d.getSpicy().equals(Boolean.parseBoolean(spicy))).collect(Collectors.toList());
+        if (maxPrice != null)
+            dishes = dishes.stream().filter(d -> d.getPrice() <= maxPrice).collect(Collectors.toList());
+        if (excludeAllergen != null) {
+            String allergen = excludeAllergen.toLowerCase();
+            dishes = dishes.stream()
+                    .filter(d -> d.getAllergens() == null ||
+                            d.getAllergens().stream().noneMatch(a -> a.toLowerCase().contains(allergen)))
+                    .collect(Collectors.toList());
+        }
+
+        return dishes.stream().map(d -> {
+            Map<String, Object> m = new java.util.LinkedHashMap<>();
+            m.put("name", d.getName());
+            m.put("price", "$" + d.getPrice());
+            m.put("category", d.getCategory());
+            m.put("vegetarian", d.getVegetarian());
+            m.put("spicy", d.getSpicy());
+            m.put("allergens", d.getAllergens());
+            m.put("available", d.getAvailable());
+            m.put("description", d.getDescription());
+            return m;
+        }).collect(Collectors.toList());
+    }
 }
