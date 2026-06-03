@@ -104,6 +104,7 @@ public class DishController {
             @RequestParam(required = false) Double maxPrice,
             @RequestParam(required = false) String excludeAllergen) {
 
+        System.out.println("=== getDishSummary called, vegetarian=" + vegetarian + ", spicy=" + spicy + ", category=" + category);
         List<Dish> dishes = dishRepository.findAll();
 
         if (category != null)
