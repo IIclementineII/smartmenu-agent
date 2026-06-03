@@ -17,7 +17,6 @@ public class DishController {
 
     private final DishRepository dishRepository;
 
-    // GET /api/dishes - get all dishes with optional filters
     @GetMapping
     public List<Dish> getAllDishes(
             @RequestParam(required = false) String category,
@@ -27,11 +26,11 @@ public class DishController {
 
         List<Dish> dishes = dishRepository.findAll();
 
-        if (category != null)
+        if (category != null && !category.isEmpty())
             dishes = dishes.stream().filter(d -> category.equalsIgnoreCase(d.getCategory())).collect(Collectors.toList());
-        if (vegetarian != null)
+        if (vegetarian != null && !vegetarian.isEmpty())
             dishes = dishes.stream().filter(d -> d.getVegetarian() != null && d.getVegetarian().equals(Boolean.parseBoolean(vegetarian))).collect(Collectors.toList());
-        if (spicy != null)
+        if (spicy != null && !spicy.isEmpty())
             dishes = dishes.stream().filter(d -> d.getSpicy() != null && d.getSpicy().equals(Boolean.parseBoolean(spicy))).collect(Collectors.toList());
         if (maxPrice != null)
             dishes = dishes.stream().filter(d -> d.getPrice() <= maxPrice).collect(Collectors.toList());
@@ -39,7 +38,6 @@ public class DishController {
         return dishes;
     }
 
-    // GET /api/dishes/search
     @GetMapping("/search")
     public List<Dish> searchDishes(
             @RequestParam(required = false) String excludeAllergen,
@@ -47,14 +45,14 @@ public class DishController {
 
         List<Dish> dishes = dishRepository.findAll();
 
-        if (excludeAllergen != null) {
+        if (excludeAllergen != null && !excludeAllergen.isEmpty()) {
             String allergen = excludeAllergen.toLowerCase();
             dishes = dishes.stream()
                     .filter(d -> d.getAllergens() == null ||
                             d.getAllergens().stream().noneMatch(a -> a.toLowerCase().contains(allergen)))
                     .collect(Collectors.toList());
         }
-        if (keyword != null) {
+        if (keyword != null && !keyword.isEmpty()) {
             String kw = keyword.toLowerCase();
             dishes = dishes.stream()
                     .filter(d -> (d.getName() != null && d.getName().toLowerCase().contains(kw)) ||
@@ -65,7 +63,6 @@ public class DishController {
         return dishes;
     }
 
-    // PATCH /api/dishes/{name}/price
     @PatchMapping("/{name}/price")
     public ResponseEntity<?> updatePrice(@PathVariable String name, @RequestBody Map<String, Double> body) {
         return dishRepository.findByNameIgnoreCase(name).map(dish -> {
@@ -75,7 +72,6 @@ public class DishController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    // PATCH /api/dishes/{name}/stock
     @PatchMapping("/{name}/stock")
     public ResponseEntity<?> updateStock(@PathVariable String name, @RequestBody Map<String, Integer> body) {
         return dishRepository.findByNameIgnoreCase(name).map(dish -> {
@@ -85,7 +81,6 @@ public class DishController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    // PATCH /api/dishes/{name}/availability
     @PatchMapping("/{name}/availability")
     public ResponseEntity<?> updateAvailability(@PathVariable String name, @RequestBody Map<String, Boolean> body) {
         return dishRepository.findByNameIgnoreCase(name).map(dish -> {
@@ -95,7 +90,6 @@ public class DishController {
         }).orElse(ResponseEntity.notFound().build());
     }
 
-    // GET /api/dishes/summary - 返回简洁格式给 Agent
     @GetMapping("/summary")
     public List<Map<String, Object>> getDishSummary(
             @RequestParam(required = false) String category,
@@ -107,15 +101,15 @@ public class DishController {
         System.out.println("=== getDishSummary called, vegetarian=" + vegetarian + ", spicy=" + spicy + ", category=" + category);
         List<Dish> dishes = dishRepository.findAll();
 
-        if (category != null)
+        if (category != null && !category.isEmpty())
             dishes = dishes.stream().filter(d -> category.equalsIgnoreCase(d.getCategory())).collect(Collectors.toList());
-        if (vegetarian != null)
+        if (vegetarian != null && !vegetarian.isEmpty())
             dishes = dishes.stream().filter(d -> d.getVegetarian() != null && d.getVegetarian().equals(Boolean.parseBoolean(vegetarian))).collect(Collectors.toList());
-        if (spicy != null)
+        if (spicy != null && !spicy.isEmpty())
             dishes = dishes.stream().filter(d -> d.getSpicy() != null && d.getSpicy().equals(Boolean.parseBoolean(spicy))).collect(Collectors.toList());
         if (maxPrice != null)
             dishes = dishes.stream().filter(d -> d.getPrice() <= maxPrice).collect(Collectors.toList());
-        if (excludeAllergen != null) {
+        if (excludeAllergen != null && !excludeAllergen.isEmpty()) {
             String allergen = excludeAllergen.toLowerCase();
             dishes = dishes.stream()
                     .filter(d -> d.getAllergens() == null ||
