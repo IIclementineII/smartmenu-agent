@@ -20,6 +20,12 @@ public class ChatController {
     private static final String LOCATION = "us-central1";
 
     private GoogleCredentials getCredentials() throws IOException {
+        String credentialsJson = System.getenv("GOOGLE_CREDENTIALS_JSON");
+        if (credentialsJson != null) {
+            return GoogleCredentials
+                    .fromStream(new java.io.ByteArrayInputStream(credentialsJson.getBytes()))
+                    .createScoped("https://www.googleapis.com/auth/cloud-platform");
+        }
         var resource = new ClassPathResource("smartmenu-credentials.json");
         return GoogleCredentials
                 .fromStream(resource.getInputStream())
