@@ -35,3 +35,39 @@ SmartMenu Agent is an AI-powered menu management system for **Jade Palace Restau
 ---
 
 ## Architecture
+
+User → Next.js (Vercel) → Spring Boot (Railway) → Dialogflow CX → Gemini 2.5 Flash → MongoDB Atlas
+
+---
+
+## API Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/api/dishes` | All menu items |
+| GET | `/api/dishes/summary` | Filtered menu (vegetarian, spicy, maxPrice, allergen) |
+| GET | `/api/dishes/search` | Search by keyword or allergen |
+| PATCH | `/api/dishes/{name}/price` | Update dish price |
+| PATCH | `/api/dishes/{name}/stock` | Update stock |
+| PATCH | `/api/dishes/{name}/availability` | Toggle availability |
+| POST | `/api/chat` | Chat with Jade AI |
+
+---
+
+## Local Development
+
+**Prerequisites:** Java 21, Maven 3.9+, MongoDB Atlas account, Google Cloud service account
+
+```bash
+git clone https://github.com/IIclementineII/smartmenu-agent.git
+cd smartmenu-agent
+# Add src/main/resources/smartmenu-credentials.json (Google service account key)
+# Add MongoDB connection string to application.yaml
+mvn spring-boot:run
+```
+
+---
+
+## License
+
+MIT License — see [LICENSE](LICENSE)
